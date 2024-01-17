@@ -1,9 +1,15 @@
 import React, { useState, useEffect, useRef } from "react";
 import axios from "axios";
+import { ColorRing } from "react-loader-spinner";
 
 const VideoRecorder = () => {
   const [recording, setRecording] = useState(false);
   const [recordedChunks, setRecordedChunks] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [location, setLocation] = useState({
+    lat: 0,
+    long: 0,
+  });
   const videoRef = useRef();
   const mediaRecorderRef = useRef();
 
@@ -11,7 +17,7 @@ const VideoRecorder = () => {
     async function enableStream() {
       try {
         const stream = await navigator.mediaDevices.getUserMedia({
-          video: { facingMode: 'environment' },
+          video: { facingMode: "environment" },
           audio: true,
         });
         videoRef.current.srcObject = stream;
@@ -36,6 +42,34 @@ const VideoRecorder = () => {
         videoRef.current.srcObject.getTracks().forEach((track) => track.stop());
       }
     };
+  }, []);
+
+  const onSuccess = (location) => {
+    setLocation({
+      loaded: true,
+      coordinates: {
+        lat: location.coords.latitude,
+        long: location.coords.longitude,
+      },
+    });
+  };
+
+  const onError = (error) => {
+    setLocation({
+      loaded: true,
+      error,
+    });
+  };
+
+  useEffect(() => {
+    if (!("geolocation" in navigator)) {
+      onError({
+        code: 0,
+        message: "Geolocation not supported",
+      });
+    }
+
+    navigator.geolocation.getCurrentPosition(onSuccess, onError);
   }, []);
 
   const startRecording = () => {
@@ -86,6 +120,7 @@ const VideoRecorder = () => {
 
   const uploadVideo = async () => {
     if (recordedChunks.length) {
+      setLoading(true);
       const blob = new Blob(recordedChunks, { type: "video/mp4" });
       const formData = new FormData();
       formData.append("file", blob, "recording.mp4");
@@ -95,6 +130,8 @@ const VideoRecorder = () => {
 
         formData.append("imageUrl", JSON.stringify(imageUrl));
         formData.append("type", JSON.stringify("video"));
+        formData.append("lat", JSON.stringify(location.coordinates.lat));
+        formData.append("long", JSON.stringify(location.coordinates.long));
 
         const response = await axios.post(
           `${process.env.REACT_APP_SERVER}/api/bigVideos`,
@@ -104,6 +141,7 @@ const VideoRecorder = () => {
       } catch (error) {
         console.error("Error uploading video:", error);
       }
+      setLoading(false);
     }
   };
 
@@ -122,6 +160,19 @@ const VideoRecorder = () => {
         <button onClick={uploadVideo} disabled={!recordedChunks.length}>
           Upload
         </button>
+        <div>
+          {loading && (
+            <ColorRing
+              visible={true}
+              height="50"
+              width="100"
+              ariaLabel="color-ring-loading"
+              wrapperStyle={{}}
+              wrapperClass="color-ring-wrapper"
+              colors={["#e15b64", "#f47e60", "#f8b26a", "#abbd81", "#849b87"]}
+            />
+          )}
+        </div>
       </div>
     </div>
   );
