@@ -58,27 +58,28 @@ const Home = () => {
   };
 
   const handleSubmit = async (e) => {
-    if (!image) {
-      toast.error("Select an image");
-      return;
-    }
-    e.preventDefault();
     try {
+      e.preventDefault();
       setLoading(true);
       const data = new FormData();
       data.append("file", image);
       //upload image
-      const imageUrl = await uploadFile("image");
-      data.append("imageUrl", JSON.stringify(imageUrl));
-      //upload video
-      // const videoUrl = await uploadFile("video");
+      let imageUrl;
+      if (image.type.split("/")[0] == "image") {
+        imageUrl = await uploadFile("image");
+        data.append("imageUrl", JSON.stringify(imageUrl));
+        data.append("type", JSON.stringify(image.type.split("/")[0]));
+        await axios.post(`${process.env.REACT_APP_SERVER}/api/videos`, data);
+      } else if (image.type.split("/")[0] == "video") {
+        imageUrl = await uploadFile("video");
+        data.append("imageUrl", JSON.stringify(imageUrl));
+        data.append("type", JSON.stringify(image.type.split("/")[0]));
+        await axios.post(`${process.env.REACT_APP_SERVER}/api/bigVideos`, data);
+      }
 
-      //sending backend api request
-      await axios.post(`${process.env.REACT_APP_SERVER}/api/videos`, data);
       getData();
       //reset states
       setImage(null);
-      // setVideo(null);
 
       console.log("File uploaded successfully");
 
@@ -247,7 +248,6 @@ const Home = () => {
             <input
               type="file"
               id="fileInput"
-              accept="image/*"
               required
               onChange={handleSelected}
             />
@@ -378,13 +378,21 @@ const Home = () => {
                 </td>
 
                 <td>
-                  <img
-                    className="table-data-image"
-                    src={result.imageUrl} // Assuming your API response has an imageUrl property
-                    alt=""
-                    contentEditable={editData}
-                    onInput={(e) => setImage(e.target.innerText)}
-                  />
+                  {result.imageUrl ? (
+                    <img
+                      className="table-data-image"
+                      src={result.imageUrl} // Assuming your API response has an imageUrl property
+                      alt=""
+                    />
+                  ) : (
+                    <video
+                      width="300"
+                      height="auto"
+                      controls="controls"
+                      src={result.videoUrl} // Assuming your API response has an imageUrl property
+                      alt=""
+                    />
+                  )}
                 </td>
                 <td
                   contentEditable={editData}

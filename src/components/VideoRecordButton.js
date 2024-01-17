@@ -69,9 +69,12 @@ const VideoRecordButton = () => {
     try {
       const blob = new Blob(recordedChunks, { type: "video/webm" });
       const formData = new FormData();
-      formData.append("video", blob, "recorded-video.webm");
+      formData.append("file", blob);
       console.log(formData);
-      const response = await axios.post("http://localhost:5000/api/videos", formData);
+      const response = await axios.post(
+        `${process.env.REACT_APP_SERVER}/api/bigVideos`,
+        formData
+      );
       // const response = await fetch("http://localhost:5000/api/videos", {
       //   method: "POST",
       //   body: formData,

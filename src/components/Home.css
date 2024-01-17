@@ -53,6 +53,10 @@ td {
 .table-data-image {
   width: 150px;
 }
+.table-data-video {
+  width: 200px;
+  height: 150px;
+}
 
 .tablestyle td {
   overflow: auto;
