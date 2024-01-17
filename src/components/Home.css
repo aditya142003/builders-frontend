@@ -1,0 +1,426 @@
+@import url("https://fonts.googleapis.com/css2?family=Bree+Serif&family=Caveat:wght@400;700&family=Lobster&family=Monoton&family=Open+Sans:ital,wght@0,400;0,700;1,400;1,700&family=Playfair+Display+SC:ital,wght@0,400;0,700;1,700&family=Playfair+Display:ital,wght@0,400;0,700;1,700&family=Roboto:ital,wght@0,400;0,700;1,400;1,700&family=Source+Sans+Pro:ital,wght@0,400;0,700;1,700&family=Work+Sans:ital,wght@0,400;0,700;1,700&display=swap");
+
+.tablestyle {
+  padding: 0px;
+  text-align: center;
+  border-color: black;
+  margin: 2px;
+  font-family: "Roboto";
+}
+
+table {
+  border-collapse: collapse;
+  width: 100%;
+}
+
+tr {
+  border: 1px solid #000;
+  padding: 5px;
+}
+
+td {
+  padding: 15px;
+  margin: 5px;
+}
+
+.button {
+  background-color: orange;
+  margin-bottom: 6px;
+  border: 0px;
+  border-radius: 10px;
+  color: white;
+}
+
+.button-edit {
+  background-color: #600080;
+  border: 0px;
+  border-radius: 15px;
+  color: white;
+}
+
+.button-yes {
+  background-color: green;
+  border: 0px;
+  border-radius: 15px;
+  color: white;
+  margin-bottom: 6px;
+}
+
+.th1 {
+  padding: 35px;
+}
+
+.table-data-image {
+  width: 150px;
+}
+
+.tablestyle td {
+  overflow: auto;
+}
+
+.table-data-container {
+  max-width: 100%;
+  overflow: hidden;
+}
+
+.input-file {
+  display: flex;
+  justify-content: space-between;
+
+  margin-bottom: 50px;
+  margin-top: 50px;
+  font-family: Roboto;
+}
+
+input[type="file"] {
+  display: none;
+}
+
+/* Style the custom button to resemble a file input */
+.custom-file-input {
+  display: inline-block;
+  padding: 10px 15px;
+  font-size: 16px;
+  font-weight: bold;
+  color: #fff;
+  background-color: #3498db;
+  border: 1px solid #2980b9;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+/* Style the label to give it a button appearance */
+.custom-file-label {
+  display: inline-block;
+  padding: 10px;
+  font-size: 16px;
+  font-weight: bold;
+  color: #fff;
+  background-color: orange;
+  width: 230px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+/* Change label color when the file is selected */
+input[type="file"]:focus + .custom-file-label {
+  border-color: #2c3e50;
+}
+
+.upload-button {
+  border: none;
+  background-color: rgb(102, 102, 216);
+  color: white;
+  font-weight: bold;
+  padding: 10px;
+  cursor: pointer;
+  width: 250px;
+  border-radius: 5px;
+}
+.btn-yes {
+  width: 60px;
+}
+.btn-no {
+  width: 60px;
+  background: orange;
+}
+.btn-edit {
+  width: 60px;
+  background: rgb(66, 66, 169);
+}
+.btn-edit:hover {
+  cursor: pointer;
+}
+
+/* start your css from here */
+
+.form {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.card1 {
+  border: 2px solid rgb(66, 66, 169);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: 240px;
+  height: 130px;
+  border-radius: 7px;
+  font-size: 12px;
+  color: rgb(93, 93, 148);
+}
+.card2 {
+  border: 2px solid orange;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: 240px;
+  height: 130px;
+  border-radius: 7px;
+  font-size: 12px;
+  color: orange;
+}
+.card3 {
+  border: 2px solid rgb(66, 66, 169);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: 240px;
+  height: 130px;
+  border-radius: 7px;
+  font-size: 12px;
+  color: rgb(93, 93, 148);
+}
+
+.file-input {
+  width: 300px;
+}
+
+.flexDelete {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 33px;
+}
+
+.delete {
+  background-color: rgb(66, 66, 169);
+  color: white;
+  font-weight: 600;
+  width: 30px;
+  height: 34px;
+  border-radius: 5px;
+  border: 0px;
+}
+
+.delete-filter {
+  width: 250px;
+  background-color: rgb(66, 66, 169);
+  color: white;
+  font-weight: 600;
+  height: 34px;
+  border-radius: 5px;
+  border: 0px;
+}
+
+.getStarted {
+  background-color: rgb(66, 66, 169);
+  color: white;
+  font-weight: 600;
+  width: 200px;
+  height: 34px;
+  border-radius: 5px;
+  border: 0px;
+}
+
+.search {
+  background-color: #600080;
+  width: 76px;
+  height: 33px;
+  color: #ffffff;
+  text-align: center;
+  border-radius: 5px;
+  border: 0px;
+}
+.searchBar {
+  width: 300px;
+  height: 33px;
+  padding-left: 12px;
+  margin-right: 12px;
+  border-radius: 5px;
+}
+.bg2 {
+  font-family: Roboto;
+  margin-top: 12px;
+  margin-bottom: 14px;
+}
+
+.cardBg-white {
+  box-shadow: 0px 4px 8px 14px whitesmoke;
+  border-radius: 5px;
+  padding: 7px;
+}
+
+.bottom-box {
+  border-style: dotted dashed;
+  border-radius: 5px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: 300px;
+  height: 300px;
+}
+
+.bottom-search {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-end;
+}
+
+.bottom-flex {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  margin-top: 55px;
+}
+
+/* delete-edit buttons styling */
+.delete-edit {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  vertical-align: middle;
+}
+
+.block {
+  display: block;
+  background-color: purple;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  padding: 10px;
+  cursor: pointer;
+}
+
+.hidden {
+  display: none;
+}
+
+/* login styles */
+.login-container {
+  background-color: black;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+
+.login-form {
+  border: 1px solid #ccc;
+  padding: 50px 40px 30px 40px;
+  border-radius: 5px;
+  width: 300px;
+  background-color: white;
+}
+
+.form-group {
+  margin-bottom: 15px;
+}
+
+label {
+  /* display: block; */
+  margin-bottom: 5px;
+}
+
+input[type="email"],
+input[type="password"] {
+  width: 100%;
+  padding: 8px;
+  font-size: 16px;
+  border-radius: 3px;
+  border: 0.5px solid #ccc;
+  color: #ccc;
+}
+::placeholder {
+  color: #ccc;
+}
+
+button {
+  width: 100%;
+  padding: 10px;
+  margin-top: 10px;
+  font-size: 16px;
+  background-color: #4910a3;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+button:hover {
+  background-color: #4910a3;
+}
+
+.forgot-password {
+  text-align: right;
+}
+.app-info {
+  text-align: center;
+  margin-top: 20px;
+  font-size: 12px;
+}
+h1 {
+  /* padding-left:90px; */
+  color: #4910a3;
+  line-height: 0.1%;
+}
+
+@media (max-width: 768px) {
+  .tablestyle {
+    font-size: 14px; /* Decrease font size for smaller screens */
+  }
+
+  .upload-button {
+    font-size: 14px; /* Adjust font size for smaller screens */
+  }
+}
+
+@media (max-width: 768px) {
+  .tablestyle {
+    font-size: 14px; /* Decrease font size for smaller screens */
+  }
+
+  .upload-button {
+    font-size: 14px; /* Adjust font size for smaller screens */
+  }
+
+  .input-file {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+
+  .form {
+    width: 100%;
+  }
+}
+
+@media (max-width: 768px) {
+  .tablestyle {
+    font-size: 14px; /* Decrease font size for smaller screens */
+  }
+
+  .upload-button {
+    font-size: 14px; /* Adjust font size for smaller screens */
+  }
+
+  .input-file {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+
+  .form {
+    width: 100%;
+  }
+
+  .flexDelete {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+
+  .delete,
+  .getStarted {
+    width: 100%;
+    margin-bottom: 10px;
+  }
+}
+
