@@ -1,115 +1,130 @@
 import React, { useState, useEffect, useRef } from "react";
 import axios from "axios";
 
-const VideoRecordButton = () => {
-  const videoRef = useRef(null);
-  const [mediaRecorder, setMediaRecorder] = useState(null);
+const VideoRecorder = () => {
+  const [recording, setRecording] = useState(false);
   const [recordedChunks, setRecordedChunks] = useState([]);
-  const [isRecording, setIsRecording] = useState(false);
+  const videoRef = useRef();
+  const mediaRecorderRef = useRef();
 
   useEffect(() => {
-    navigator.mediaDevices
-      .getUserMedia({ video: true, audio: true })
-      .then((stream) => {
+    async function enableStream() {
+      try {
+        const stream = await navigator.mediaDevices.getUserMedia({
+          video: true,
+          audio: true,
+        });
         videoRef.current.srcObject = stream;
+        mediaRecorderRef.current = new MediaRecorder(stream, {
+          mimeType: "video/webm",
+        });
 
-        const recorder = new MediaRecorder(stream);
-
-        recorder.ondataavailable = (event) => {
+        mediaRecorderRef.current.addEventListener("dataavailable", (event) => {
           if (event.data.size > 0) {
-            setRecordedChunks((prevChunks) => [...prevChunks, event.data]);
+            setRecordedChunks((prev) => [...prev, event.data]);
           }
-        };
+        });
+      } catch (err) {
+        console.error("Error accessing media devices:", err);
+      }
+    }
 
-        recorder.onstop = () => {
-          // Create a Blob with the recorded data
-          const recordedBlob = new Blob(recordedChunks, { type: "video/webm" });
-          // Ensure URL object remains valid until playback
-          const recordedVideoUrl = URL.createObjectURL(recordedBlob);
-          videoRef.current.src = recordedVideoUrl;
-          videoRef.current.play(); // Start playback immediately
-        };
+    enableStream();
 
-        recorder.onerror = (error) => {
-          console.error("MediaRecorder error:", error);
-        };
-
-        setMediaRecorder(recorder);
-      })
-      .catch((error) => console.error("Error accessing media devices:", error));
-  }, [recordedChunks]);
+    return () => {
+      if (videoRef.current && videoRef.current.srcObject) {
+        videoRef.current.srcObject.getTracks().forEach((track) => track.stop());
+      }
+    };
+  }, []);
 
   const startRecording = () => {
-    if (mediaRecorder) {
-      mediaRecorder.start();
-      setIsRecording(true);
-    }
+    setRecordedChunks([]);
+    mediaRecorderRef.current.start();
+    setRecording(true);
   };
 
   const stopRecording = () => {
-    if (mediaRecorder) {
-      mediaRecorder.stop();
-      setIsRecording(false);
+    mediaRecorderRef.current.stop();
+    setRecording(false);
+  };
+
+  const downloadRecording = () => {
+    if (recordedChunks.length) {
+      const blob = new Blob(recordedChunks, { type: "video/mp4" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = "recording.mp4";
+      document.body.appendChild(a);
+      a.click();
+      setTimeout(() => {
+        document.body.removeChild(a);
+        window.URL.revokeObjectURL(url);
+      }, 100);
     }
   };
 
-  const downloadVideo = () => {
-    const blob = new Blob(recordedChunks, { type: "video/webm" });
-    const url = URL.createObjectURL(blob);
+  const uploadFile = async (blob) => {
+    const data = new FormData();
+    data.append("file", blob);
+    data.append("upload_preset", "videos");
+    try {
+      let cloudName = "dscmtg4tx";
+      let resourceType = "video";
+      let api = `https://api.cloudinary.com/v1_1/${cloudName}/${resourceType}/upload`;
 
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = "recorded-video.webm";
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
+      const res = await axios.post(api, data);
+      // console.log(res);
+      const { secure_url } = res.data;
+      // console.log(secure_url);
+      return secure_url;
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   const uploadVideo = async () => {
-    try {
-      const blob = new Blob(recordedChunks, { type: "video/webm" });
+    if (recordedChunks.length) {
+      const blob = new Blob(recordedChunks, { type: "video/mp4" });
       const formData = new FormData();
-      formData.append("file", blob);
-      console.log(formData);
-      const response = await axios.post(
-        `${process.env.REACT_APP_SERVER}/api/bigVideos`,
-        formData
-      );
-      // const response = await fetch("http://localhost:5000/api/videos", {
-      //   method: "POST",
-      //   body: formData,
-      // });
+      formData.append("file", blob, "recording.mp4");
 
-      if (response.ok) {
-        console.log("Video uploaded successfully!");
-      } else {
-        console.error("Failed to upload video.");
+      try {
+        const imageUrl = await uploadFile(blob);
+
+        formData.append("imageUrl", JSON.stringify(imageUrl));
+        formData.append("type", JSON.stringify("video"));
+
+        const response = await axios.post(
+          `${process.env.REACT_APP_SERVER}/api/bigVideos`,
+          formData
+        );
+        console.log("Video uploaded successfully:", response);
+      } catch (error) {
+        console.error("Error uploading video:", error);
       }
-    } catch (error) {
-      console.error("Error uploading video:", error);
     }
   };
 
   return (
     <div>
-      <div
-        style={{
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
-          height: "80vh",
-        }}
-      >
-        <video ref={videoRef} playsInline autoPlay muted controls={true} />
-      </div>
-      <div style={{ textAlign: "center" }}>
-        <button onClick={startRecording}>Start Recording</button>
-        <button onClick={stopRecording}>Stop Recording</button>
-        <button onClick={downloadVideo}>Download Video</button>
-        <button onClick={uploadVideo}>Upload Video</button>
+      <video ref={videoRef} autoPlay playsInline />
+      <div>
+        {recording ? (
+          <button onClick={stopRecording}>Stop Recording</button>
+        ) : (
+          <button onClick={startRecording}>Start Recording</button>
+        )}
+        <button onClick={downloadRecording} disabled={!recordedChunks.length}>
+          Download
+        </button>
+        <button onClick={uploadVideo} disabled={!recordedChunks.length}>
+          Upload
+        </button>
       </div>
     </div>
   );
 };
 
-export default VideoRecordButton;
+export default VideoRecorder;
